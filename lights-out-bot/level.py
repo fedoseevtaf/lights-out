@@ -1,7 +1,4 @@
 '''\
-level.py
-++++++++++++
-
 This module provide simple and powerfull tools for level-making.
 
 You can use basic implementation :code:`Level`
