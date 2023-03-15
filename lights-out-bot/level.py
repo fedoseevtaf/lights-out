@@ -124,6 +124,45 @@ class BaseLevel(ABC):
 
 class Level(BaseLevel):
 	'''\
+	This is a basic implementation for Level.
+
+	It provide built-in functions to load level from different sources.
+
+	1. Prepared :code:`Sequence[bool]`
+		>>> level_content = (
+				True, False, False, True,
+				False, True, True, False,
+				True, False, True, False,
+		)
+		>>> level = Level(4, 3, content=level_content)
+	2. String
+		>>> level_content = \'''\
+		X..X
+		.XX.
+		X.X.
+		\'''
+		>>> level = Level.from_string(4, 3, level_content, '.', 'X')
+	3. File (:code:`TextIO`)
+		.. NOTE::
+
+			Text io data must be written in special format!
+
+		>>> level_content = \'''\
+		4 3 0
+		.*
+		X#
+		#..X	.#X*	X*X.
+		\'''
+		>>> import io
+		>>> level = Level.from_io(io.StringIO(level_content))
+
+	After that you get a simple level object.
+	>>> level.width
+	4
+	>>> level.height
+	3
+	>>> print(*level)
+	True False False True False True True False True False True False
 	'''
 
 	@classmethod
@@ -131,6 +170,24 @@ class Level(BaseLevel):
 			cls, width: int, height: int, string: str,
 			off_codes: Container[str], on_codes: Container[str]
 		):
+		'''\
+		Read level from string.
+
+		:width:
+			level width
+		:height:
+			level height
+		:string:
+			string of level (rows aren't separated)
+		:off_codes:
+			:code:`Container` of the **light-off** characters
+		:on_codes:
+			:code:`Container` of the **light-on** characters
+
+		.. NOTE::
+
+			If character in string isn't in :code:`on/off_codes` it's ignored
+		'''
 
 		content = []
 		for char in string:
@@ -143,6 +200,13 @@ class Level(BaseLevel):
 
 	@classmethod
 	def from_io(cls, io: TextIO):
+		'''\
+		Read level from io (use a special format).
+
+		:io:
+			:code:`TextIO` to read level
+		'''
+
 		width, height, skip = map(int, io.readline().split())
 		off_codes = io.readline().strip()
 		on_codes = io.readline().strip()
@@ -152,10 +216,31 @@ class Level(BaseLevel):
 
 	@classmethod
 	def from_file(cls, filename: str):
+		'''\
+		:filename:
+			file name
+
+		The same as:
+
+		.. code:: python
+
+			with open(filename) as file:
+				return cls.from_io(file)
+		'''
+
 		with open(filename) as file:
 			return cls.from_io(file)
 
 	def __init__(self, width, height, *, content: Sequence[bool] = tuple()):
+		'''\
+		:width:
+			level width
+		:height:
+			level height
+		:content:
+			Prepared :code:`Sequence[bool]`
+		'''
+
 		self.__width = width
 		self.__height = height
 		self.__content = content
@@ -169,6 +254,14 @@ class Level(BaseLevel):
 		return self.__height
 
 	def __iter__(self) -> Iterator[bool]:
+		'''\
+		Line after line representation of the level.
+
+		.. NOTE::
+
+			If the content `length` isn't enough it yields False.
+		'''
+
 		yield from self.__content
 		for _ in range(self.width * self.height - len(self.__content)):
 			yield False
