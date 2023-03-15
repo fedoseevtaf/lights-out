@@ -20,6 +20,8 @@ Rules and other details about the Lights Out game you can read [here](https://en
 
 ## For developers
 
+### Docs [here](https://lights-out.readthedocs.io/en/latest/)
+
 ### Features
 
 ##### REST API for Lights Out
@@ -39,13 +41,15 @@ Rules and other details about the Lights Out game you can read [here](https://en
 #### Requrements
 
 - flask
-- python-telegram-bot
+- pyTelegramBotAPI
 
 #### Linters and code style
 
 - flake8
 
 > Use only tabs instead of spaces
+
+Documentation is made with sphinx.
 
 ### Authors
 
