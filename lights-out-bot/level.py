@@ -1,8 +1,8 @@
 '''\
-This module provide simple and powerfull tools for level-making.
+This module provides simple and powerfull tools for creating levels.
 
 You can use basic implementation :code:`Level`
-or make your custom tool by inheritance of :code:`BaseLevel`.
+or make your custom tool by inheriting from :code:`BaseLevel`.
 
 Example:
 
@@ -56,16 +56,14 @@ class BaseLevel(ABC):
 
 	.. NOTE::
 
-		I use :code:`property` for width and height because width and height
-		are properties! It's important for level object have an exat private
-		info about itself.
+		I use :code:`property` for width and height
 	'''
 
 	@property
 	@abstractmethod
 	def width(self) -> int:
 		'''\
-		Width of the level.
+		Level width
 		'''
 
 		return 0
@@ -74,14 +72,14 @@ class BaseLevel(ABC):
 	@abstractmethod
 	def height(self) -> int:
 		'''\
-		Height of the level.
+		Level height
 		'''
 		return 0
 
 	@abstractmethod
 	def __iter__(self) -> Iterator[bool]:
 		'''\
-		Interlacing representation of the level.
+		Line by line representation of the level.
 
 		Order of cells: (4 x 4 example)
 
@@ -115,7 +113,7 @@ class BaseLevel(ABC):
 
 		.. NOTE::
 
-			The `length` of the iterator should be greater or equal width * height.
+			The `length` of the iterator should be greater or equal than :strong:`width * height`
 		'''
 
 		return
@@ -124,9 +122,9 @@ class BaseLevel(ABC):
 
 class Level(BaseLevel):
 	'''\
-	This is a basic implementation for Level.
+	This is a basic implementation for level.
 
-	It provide built-in functions to load level from different sources.
+	It have built-in functions to load level from different sources.
 
 	1. Prepared :code:`Sequence[bool]`
 		>>> level_content = (
@@ -145,7 +143,7 @@ class Level(BaseLevel):
 	3. File (:code:`TextIO`)
 		.. NOTE::
 
-			Text io data must be written in special format!
+			Text io data must be written in special format
 
 		>>> level_content = \'''\
 		4 3 0
@@ -255,11 +253,11 @@ class Level(BaseLevel):
 
 	def __iter__(self) -> Iterator[bool]:
 		'''\
-		Line after line representation of the level.
+		Line by line representation of the level.
 
 		.. NOTE::
 
-			If the content `length` isn't enough it yields False.
+			If the content `length` isn't enough it yields False
 		'''
 
 		yield from self.__content
