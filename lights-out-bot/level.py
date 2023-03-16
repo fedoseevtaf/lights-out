@@ -127,32 +127,41 @@ class Level(BaseLevel):
 	It has built-in functions to load level from different sources.
 
 	1. Prepared :code:`Sequence[bool]`
-		>>> level_content = (
+		.. code:: python
+			:number-lines:
+
+			level_content = (
 				True, False, False, True,
 				False, True, True, False,
 				True, False, True, False,
-		)
-		>>> level = Level(4, 3, content=level_content)
+			)
+			level = Level(4, 3, content=level_content)
 	2. String
-		>>> level_content = \'''\\
-		X..X
-		.XX.
-		X.X.
-		\'''
-		>>> level = Level.from_string(4, 3, level_content, '.', 'X')
+		.. code::
+			:number-lines:
+
+			level_content = \'''\\
+			X..X
+			.XX.
+			X.X.
+			\'''
+			level = Level.from_string(4, 3, level_content, '.', 'X')
 	3. File (:code:`TextIO`)
 		.. NOTE::
 
 			Text io data must be written in special format
 
-		>>> level_content = \'''\\
-		4 3 0
-		.*
-		X#
-		#..X	.#X*	X*X.
-		\'''
-		>>> import io
-		>>> level = Level.from_io(io.StringIO(level_content))
+		.. code:: python
+			:number-lines:
+
+			import io
+			level_content = \'''\\
+			4 3 0
+			.*
+			X#
+			#..X	.#X*	X*X.
+			\'''
+			level = Level.from_io(StringIO(level_content))
 
 	After that you get a simple level object.
 
@@ -190,27 +199,33 @@ class Level(BaseLevel):
 		Examples:
 
 		-
-			>>> string = '1001__0110__1010'
-			>>> level = Level.from_string(4, 3, string, '0', '1')
+			.. code::
+				:number-lines:
+
+				string = '1001__0110__1010'
+				level = Level.from_string(4, 3, string, '0', '1')
 
 		-
-			>>> line_separator = '_'
-			>>> lights_off = '-~'
-			>>> lights_on = '#X'
+			.. code::
+				:number-lines:
 
-			>>> line1 = '#--#'
-			>>> line2 = '~XX~'
-			>>> # Mixed case:
-			>>> line3 = 'X-#~'
-			>>> lines = line1, line2, line3
+				line_separator = '_'
+				lights_off = '-~'
+				lights_on = '#X'
 
-			>>> string_a = line_separator.join(lines)
-			>>> string_b = ''.join(lines) # Line separators are optional
+				line1 = '#--#'
+				line2 = '~XX~'
+				# Mixed case:
+				line3 = 'X-#~'
+				lines = line1, line2, line3
 
-			>>> level_a = Level.from_string(4, 3, string_a, off_codes, on_codes)
-			>>> level_b = Level.from_string(4, 3, string_b, off_codes, on_codes)
-			>>> for cell_a, cell_b is zip(level_a, level_b):
-				assert cell_a is cell_b
+				string_a = line_separator.join(lines)
+				string_b = ''.join(lines) # Line separators are optional
+
+				level_a = Level.from_string(4, 3, string_a, off_codes, on_codes)
+				level_b = Level.from_string(4, 3, string_b, off_codes, on_codes)
+				for cell_a, cell_b is zip(level_a, level_b):
+					assert cell_a is cell_b
 		'''
 
 		content = []
