@@ -124,7 +124,7 @@ class Level(BaseLevel):
 	'''\
 	This is a basic implementation for level.
 
-	It have built-in functions to load level from different sources.
+	It has built-in functions to load level from different sources.
 
 	1. Prepared :code:`Sequence[bool]`
 		>>> level_content = (
@@ -134,7 +134,7 @@ class Level(BaseLevel):
 		)
 		>>> level = Level(4, 3, content=level_content)
 	2. String
-		>>> level_content = \'''\
+		>>> level_content = \'''\\
 		X..X
 		.XX.
 		X.X.
@@ -145,7 +145,7 @@ class Level(BaseLevel):
 
 			Text io data must be written in special format
 
-		>>> level_content = \'''\
+		>>> level_content = \'''\\
 		4 3 0
 		.*
 		X#
@@ -155,6 +155,7 @@ class Level(BaseLevel):
 		>>> level = Level.from_io(io.StringIO(level_content))
 
 	After that you get a simple level object.
+
 	>>> level.width
 	4
 	>>> level.height
@@ -185,6 +186,31 @@ class Level(BaseLevel):
 		.. NOTE::
 
 			If character in string isn't in :code:`on/off_codes` it's ignored
+
+		Examples:
+
+		-
+			>>> string = '1001__0110__1010'
+			>>> level = Level.from_string(4, 3, string, '0', '1')
+
+		-
+			>>> line_separator = '_'
+			>>> lights_off = '-~'
+			>>> lights_on = '#X'
+
+			>>> line1 = '#--#'
+			>>> line2 = '~XX~'
+			>>> # Mixed case:
+			>>> line3 = 'X-#~'
+			>>> lines = line1, line2, line3
+
+			>>> string_a = line_separator.join(lines)
+			>>> string_b = ''.join(lines) # Line separators are optional
+
+			>>> level_a = Level.from_string(4, 3, string_a, off_codes, on_codes)
+			>>> level_b = Level.from_string(4, 3, string_b, off_codes, on_codes)
+			>>> for cell_a, cell_b is zip(level_a, level_b):
+				assert cell_a is cell_b
 		'''
 
 		content = []
@@ -223,7 +249,7 @@ class Level(BaseLevel):
 		.. code:: python
 
 			with open(filename) as file:
-				return cls.from_io(file)
+				level = Level.from_io(file)
 		'''
 
 		with open(filename) as file:
