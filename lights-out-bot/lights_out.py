@@ -16,6 +16,8 @@ class LightsOut():
 	try:
 		with open(DUMP) as file:
 			_storage = eval(file.read())
+	except Exception:
+		pass
 
 	@atexit.register
 	def _dump():
