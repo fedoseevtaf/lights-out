@@ -74,6 +74,7 @@ class BaseLevel(ABC):
 		'''\
 		Level height
 		'''
+
 		return 0
 
 	@abstractmethod
@@ -113,7 +114,8 @@ class BaseLevel(ABC):
 
 		.. NOTE::
 
-			The `length` of the iterator should be greater or equal than :strong:`width * height`
+			The `length` of the iterator should be 
+			greater or equal than :strong:`width * height`
 		'''
 
 		return

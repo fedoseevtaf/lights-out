@@ -30,7 +30,7 @@ def send_message(
 	):
 	if content is None:
 		content = {}
-	text = Messageconstructor.make_text(page_id, content)
+	text = MessageConstructor.make_text(page_id, content)
 	markup = MessageConstructor.make_markup(page_id, content)
 	return show_message(chat_id, message_id, in_place, text, markup)
 
@@ -56,6 +56,7 @@ def show_message(
 		if not (ex.description == 'Bad Request: message to edit not found'):
 			return message_id
 
+		# If message to edit not found:
 		new_message = bot.send_message(chat_id, text, reply_markup=markup)
 		return new_message.message_id
 
@@ -98,7 +99,7 @@ def handle_message(message: tp.Message):
 	'audio', 'photo', 'voice', 'video',
 	'document', 'location', 'contact', 'sticker'
 ])
-def handle_message(message: tp.Message):
+def handle_spam(message: tp.Message):
 	bot.delete_message(message.chat.id, message.message_id)
 
 

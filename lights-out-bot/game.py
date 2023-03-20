@@ -2,6 +2,7 @@ from level import BaseLevel
 
 
 class Game(BaseLevel):
+
 	def set_state(self, lvl: BaseLevel):
 		self.lvl = list(lvl)
 		self._width = lvl.width
@@ -12,7 +13,7 @@ class Game(BaseLevel):
 			for x in range(col - 1, col + 2):
 				number = x * self.width + y
 				if 0 <= number <= len(self.lvl):
-					self.lvl[number] = not(self.lvl[number])
+					self.lvl[number] = not self.lvl[number]
 
 	@property
 	def width(self) -> int:
@@ -27,9 +28,9 @@ class Game(BaseLevel):
 		'''\
 		Level height
 		'''
+
 		return self._height
 
 	def __iter__(self):
 		return iter(self.lvl)
 
-Game()

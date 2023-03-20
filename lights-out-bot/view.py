@@ -5,12 +5,9 @@ class MessageConstructor():
 
 	@classmethod
 	def make_text(cls, page_id, content):
-		return f'{content=}'
+		return f'{page_id=}\n\n{content=}'
 
 	@classmethod
 	def make_markup(cls, page_id, content):
-		markup = tp.InlineKeyboardMarkup()
-		button = tp.InlineKeyboardButton(f'{page_id=}', callback_data='qwerty')
-		markup.add(button)
-		return markup
+		return tp.InlineKeyboardMarkup()
 

@@ -1,4 +1,4 @@
-from typing import Callablem, Dict
+from typing import Callable
 
 from lights_out import LightsOut
 
@@ -24,6 +24,7 @@ class UserState():
 		page_id = state['page_id']
 		if page_id == 'game':
 			cls._hide_message(user_id, message_id)
+			cls._update_game_view(user_id)
 
 	@classmethod
 	def update_by_message(cls, user_id, message_id, message: str):
@@ -31,47 +32,55 @@ class UserState():
 		page_id = state['page_id']
 		if page_id == 'game':
 			cls._hide_message(user_id, message_id)
+			cls._update_game_view(user_id)
 
 	@classmethod
 	def update_by_callback(cls, user_id, message_id, data: str):
 		state = cls._get_user_state(user_id)
+		if message_id != state['last_message_id']:
+			return
+
 		page_id = state['page_id']
 		if page_id == 'game':
 			cls._hide_message(user_id, message_id)
-			last_message_id = state['info'].last_message_id
-			if last_message_id != message_id:
-				return
-
 			data = eval(data)
 			state['info'] = LightsOut.board_action(data['row'], data['col'])
+			cls._update_game_view(user_id)
+
+	@classmethod
+	def _update_game_view(cls, user_id, *, first_view_update: bool = False):
+			state = cls._get_user_state(user_id)
+			page_id = state['page_id']
+			last_message_id = state['last_message_id']
+			info = state['info']
 			content = {
-				'board': state['info'].board,
-				'width': state['info'].width,
-				'height': state['info'].height,
+				'board': info.board,
+				'width': info.width,
+				'height': info.height,
 			}
-			message_id = cls._show_message(
+			state['last_message_id'] = cls._show_message(
 				user_id,
-				state['info'].last_message_id,
-				in_place=True,
+				last_message_id,
+				not first_view_update,
 				page_id,
 				content,
 			)
-			state['info'] = LightsOut.update_message_id(user_id, message_id)
 
 	@classmethod
 	def _get_user_state(cls, user_id):
-		state = cls._user_cache.get(user_id)
+		state = cls._users_cache.get(user_id)
 		if state is None:
-			state = self._build_user_state(user_id)
-			cls._user_cache[user_id] = state
+			state = cls._build_user_state(user_id)
+			cls._users_cache[user_id] = state
 		return state
 
 	@classmethod
 	def _build_user_state(cls, user_id):
 		state = {}
-		state['info'] = info = LightsOut.get_user_info()
+		state['info'] = info = LightsOut.get_user_info(user_id)
+		state['last_message_id'] = -1
 		state['page_id'] = 'main'
-		if not info.in_game:
+		if info.in_game:
 			state['page_id'] = 'game'
 		return state
 
