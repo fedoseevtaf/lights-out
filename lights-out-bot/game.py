@@ -12,7 +12,9 @@ class Game(BaseLevel):
 		for y in range(row - 1, row + 2):
 			for x in range(col - 1, col + 2):
 				number = x * self.width + y
-				if 0 <= number <= len(self.lvl):
+				if not (0 <= number < len(self.lvl)):
+					continue
+				if col == x or row == y:
 					self.lvl[number] = not self.lvl[number]
 
 	@property
