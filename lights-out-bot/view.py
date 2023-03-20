@@ -12,20 +12,20 @@ class MessageConstructor:
 	@classmethod
 	def make_markup(cls, page_id, content):
 		markup = tp.ReplyKeyboardMarkup(resize_keyboard=True)
-		markup.add(tp.KeyboardButton(text_btn) for text_btn in TEXT_BUTTON[page_id])
+		markup.add(*(tp.KeyboardButton(text_btn) for text_btn in TEXT_BUTTON[page_id]))
 		if page_id == 'game':
-			markup = tp.InlineKeyboardMarkup(row_width=content[width])
-			markup.add(*(tp.InlineKeyboardButton(
-					'⬜' if btn else '⬛',
+			markup = tp.InlineKeyboardMarkup(row_width=content['width'])
+			markup.add(*[tp.InlineKeyboardButton(
+					('⬛' if btn else '⬜'),
 					callback_data=(
 							'{"row":' +
-							str(ind // content[width]) +
+							str(ind // content['width']) +
 							', "col": ' +
-							str(ind % content[width]) + '}'
+							str(ind % content['width']) + '}'
 					)
 				)
-				for ind, btn in enumerate(content[board])
-				)
+				for ind, btn in enumerate(content['board'])
+				]
 			)
 		return markup
 
