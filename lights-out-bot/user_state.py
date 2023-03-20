@@ -42,9 +42,8 @@ class UserState():
 
 		page_id = state['page_id']
 		if page_id == 'game':
-			cls._hide_message(user_id, message_id)
 			data = eval(data)
-			state['info'] = LightsOut.board_action(data['row'], data['col'])
+			state['info'] = LightsOut.board_action(user_id, data['row'], data['col'])
 			cls._update_game_view(user_id)
 
 	@classmethod

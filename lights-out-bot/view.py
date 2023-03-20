@@ -9,5 +9,7 @@ class MessageConstructor():
 
 	@classmethod
 	def make_markup(cls, page_id, content):
-		return tp.InlineKeyboardMarkup()
+		 markup = tp.InlineKeyboardMarkup()
+		 markup.add(tp.InlineKeyboardButton('blabla', callback_data='{\'row\': 0, \'col\': 0}'))
+		 return markup
 

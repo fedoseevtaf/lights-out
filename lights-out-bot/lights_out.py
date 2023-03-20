@@ -37,7 +37,7 @@ class LightsOut():
 		if not info.in_game:
 			return info
 
-		level = Level(info.width, info.height, info.board)
+		level = Level(info.width, info.height, content=info.board)
 		cls._game.set_state(level)
 		cls._game.board_action(row, col)
 		new_info = UserInfo(
