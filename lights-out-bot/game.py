@@ -9,12 +9,15 @@ class Game(BaseLevel):
 		self._height = lvl.height
 
 	def board_action(self, col: int, row: int):
-		for y in range(row - 1, row + 2):
-			for x in range(col - 1, col + 2):
-				number = x * self.width + y
+		for x in range(row - 1, row + 2):
+			for y in range(col - 1, col + 2):
+				try:
+					number = int(str(y) + str(x), self._width)
+				except ValueError:
+					continue
 				if not (0 <= number < len(self.lvl)):
 					continue
-				if col == x or row == y:
+				if col == y or row == x:
 					self.lvl[number] = not self.lvl[number]
 
 	@property
