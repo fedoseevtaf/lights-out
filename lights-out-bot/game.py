@@ -11,11 +11,8 @@ class Game(BaseLevel):
 	def board_action(self, col: int, row: int):
 		for x in range(row - 1, row + 2):
 			for y in range(col - 1, col + 2):
-				try:
-					number = int(str(y) + str(x), self._width)
-				except ValueError:
-					continue
-				if not (0 <= number < len(self.lvl)):
+				number = y * self._width + x
+				if not (0 <= y < self._height) or not (0 <= x < self._width):
 					continue
 				if col == y or row == x:
 					self.lvl[number] = not self.lvl[number]
