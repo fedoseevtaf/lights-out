@@ -97,16 +97,15 @@ class UserState():
 
 	@classmethod
 	def _update_page(cls, user_id, message_id, message: str):
-		state = cls._get_user_state(user_id)
-		page = 
+		cls._redisplay_page(user_id, inplace=True)
 
 	@classmethod
-	def _redisplay_page(cls, user_id, content=None):
+	def _redisplay_page(cls, user_id, content=None, inplace=False):
 		state = cls._get_user_state(user_id)
 		state['last_message_id'] = cls._show_message(
 			user_id,
 			state['last_message_id'],
-			False, # Not in place (resend or 'redisplay')
+			inplace,
 			state['page_id'],
 			content,
 		)
