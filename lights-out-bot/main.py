@@ -23,9 +23,9 @@ def send_message(
 		# Message specification
 		chat_id: int,
 		message_id: int,
-		in_place: bool = False,
+		in_place: bool,
 		# Content specification
-		page_id: str = 'main',
+		page_id: str,
 		content: Optional[Dict] = None,
 	):
 	if content is None:
@@ -51,14 +51,11 @@ def show_message(
 	try:
 		bot.edit_message_text(text, chat_id, message_id)
 		bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
-		return message_id
 	except tb.apihelper.ApiTelegramException as ex:
-		if not (ex.description == 'Bad Request: message to edit not found'):
-			return message_id
-
-		# If message to edit not found:
-		new_message = bot.send_message(chat_id, text, reply_markup=markup)
-		return new_message.message_id
+		if ex.description == 'Bad Request: message to edit not found':
+			new_message = bot.send_message(chat_id, text, reply_markup=markup)
+			return new_message.message_id
+	return message_id
 
 
 class CommandHandler():
@@ -79,7 +76,7 @@ class CommandHandler():
 		)
 
 
-cmd_print = CommandHandler._for('print')
+command_back = CommandHandler._for('back')
 
 
 @bot.callback_query_handler(func=lambda query: True)

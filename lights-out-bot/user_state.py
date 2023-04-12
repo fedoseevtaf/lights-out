@@ -1,6 +1,7 @@
 from typing import Callable
 
 from lights_out import LightsOut
+from view_const import PAGE, PAGE_REPLY_BUTTONS, PAGE_COMMANDS
 
 
 class UserState():
@@ -30,9 +31,13 @@ class UserState():
 	def update_by_message(cls, user_id, message_id, message: str):
 		state = cls._get_user_state(user_id)
 		page_id = state['page_id']
-		if page_id == 'game':
-			cls._hide_message(user_id, message_id)
-			cls._update_game_view(user_id)
+
+		command = PAGE_REPLY_BUTTONS[page_id].get(message)
+		if command is None:
+			cls._update_page(user_id, message_id, message)
+			return
+		state.update(command.content)
+		cls._switch_page(user_id, message_id, command.next_page)
 
 	@classmethod
 	def update_by_callback(cls, user_id, message_id, data: str):
@@ -47,25 +52,6 @@ class UserState():
 			cls._update_game_view(user_id)
 
 	@classmethod
-	def _update_game_view(cls, user_id, *, first_view_update: bool = False):
-			state = cls._get_user_state(user_id)
-			page_id = state['page_id']
-			last_message_id = state['last_message_id']
-			info = state['info']
-			content = {
-				'board': info.board,
-				'width': info.width,
-				'height': info.height,
-			}
-			state['last_message_id'] = cls._show_message(
-				user_id,
-				last_message_id,
-				not first_view_update,
-				page_id,
-				content,
-			)
-
-	@classmethod
 	def _get_user_state(cls, user_id):
 		state = cls._users_cache.get(user_id)
 		if state is None:
@@ -78,8 +64,50 @@ class UserState():
 		state = {}
 		state['info'] = info = LightsOut.get_user_info(user_id)
 		state['last_message_id'] = -1
-		state['page_id'] = 'main'
+		state['page_id'] = PAGE.MAIN
 		if info.in_game:
-			state['page_id'] = 'game'
+			state['page_id'] = PAGE.GAME
 		return state
+
+	@classmethod
+	def _switch_page(cls, user_id, message_id, next_page):
+		state = cls._get_user_state(user_id)
+		actual_page = state['page_id']
+		state['page_id'] = next_page
+		if next_page is PAGE.NO_PAGE:
+			cls._switch_page(user_id, message_id, actual_page)
+		elif next_page is PAGE.MAIN:
+			cls._switch_page_to_main(user_id, message_id)
+		elif next_page is PAGE.INFO:
+			cls._switch_page_to_info(user_id, message_id)
+		elif next_page is PAGE.HELP:
+			cls._switch_page_to_help(user_id, message_id)
+
+	@classmethod
+	def _switch_page_to_main(cls, user_id, message_id):
+		cls._redisplay_page(user_id)
+
+	@classmethod
+	def _switch_page_to_info(cls, user_id, message_id):
+		cls._redisplay_page(user_id)
+
+	@classmethod
+	def _switch_page_to_help(cls, user_id, message_id):
+		cls._redisplay_page(user_id)
+
+	@classmethod
+	def _update_page(cls, user_id, message_id, message: str):
+		state = cls._get_user_state(user_id)
+		page = 
+
+	@classmethod
+	def _redisplay_page(cls, user_id, content=None):
+		state = cls._get_user_state(user_id)
+		state['last_message_id'] = cls._show_message(
+			user_id,
+			state['last_message_id'],
+			False, # Not in place (resend or 'redisplay')
+			state['page_id'],
+			content,
+		)
 

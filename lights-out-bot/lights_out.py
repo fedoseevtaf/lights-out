@@ -54,7 +54,7 @@ class LightsOut():
 	def _build_info(cls, user_id) -> UserInfo:
 		return UserInfo(
 			user_id=user_id,
-			in_game=True,
+			in_game=False,
 			board=(
 				True, False, True, True, False,
 				False, True, True, True, False,
