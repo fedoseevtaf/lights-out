@@ -35,7 +35,7 @@ PAGE_TEXT = {
 PAGE_REPLY_BUTTONS = {
 	PAGE.MAIN: {
 		'О нас': PageSwitchCommand(PAGE.INFO),
-		#'Играть': PageSwitchCommand(PAGE.CGMD),
+		'Играть': PageSwitchCommand(PAGE.CGMD),
 		'Об игре': PageSwitchCommand(PAGE.HELP),
 	},
 	PAGE.INFO: {
@@ -43,11 +43,24 @@ PAGE_REPLY_BUTTONS = {
 	},
 	PAGE.HELP: {
 		'Назад': PageSwitchCommand(PAGE.MAIN)
-	}
-	#PAGE.CGMD: {'Назад', 'Сгенерированная', 'Готовая'},
-	#PAGE.CBRD: {'5 * 5', '6 * 6', '7 * 7', '8 * 8', '9 * 9', '10 * 10', 'Назад'},
-	#PAGE.CLVL: {'1', '2', '3', 'Назад'},
-	#PAGE.GAME: {'Назад', 'Стоп'}
+	},
+	PAGE.CGMD: {
+		'Назад': PageSwitchCommand(PAGE.MAIN),
+		'Случайный уровень': PageSwitchCommand(
+			PAGE.CBRD,
+			{'gmd': 'rnd'},
+		),
+		'Готовый уровень': PageSwitchCommand(
+			PAGE.CBRD,
+			{'gmd': 'lvl'},
+		),
+	},
+	PAGE.CBRD: {
+		'Назад': PageSwitchCommand(PAGE.CGMD),
+	},
+	#{'5 * 5', '6 * 6', '7 * 7', '8 * 8', '9 * 9', '10 * 10'},
+	PAGE.CLVL: {}, # {'1', '2', '3', 'Назад'},
+	PAGE.GAME: {}, # {'Назад', 'Стоп'}
 }
 
 PAGE_COMMANDS = {

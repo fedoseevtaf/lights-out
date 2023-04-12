@@ -23,9 +23,6 @@ class UserState():
 	def update_by_command(cls, user_id, message_id, command: str):
 		state = cls._get_user_state(user_id)
 		page_id = state['page_id']
-		if page_id == 'game':
-			cls._hide_message(user_id, message_id)
-			cls._update_game_view(user_id)
 
 	@classmethod
 	def update_by_message(cls, user_id, message_id, message: str):
@@ -44,12 +41,6 @@ class UserState():
 		state = cls._get_user_state(user_id)
 		if message_id != state['last_message_id']:
 			return
-
-		page_id = state['page_id']
-		if page_id == 'game':
-			data = eval(data)
-			state['info'] = LightsOut.board_action(user_id, data['row'], data['col'])
-			cls._update_game_view(user_id)
 
 	@classmethod
 	def _get_user_state(cls, user_id):
@@ -82,25 +73,38 @@ class UserState():
 			cls._switch_page_to_info(user_id, message_id)
 		elif next_page is PAGE.HELP:
 			cls._switch_page_to_help(user_id, message_id)
+		elif next_page is PAGE.CGMD:
+			cls._switch_page_to_cgmd(user_id, message_id)
+		elif next_page is PAGE.CBRD:
+			cls._switch_page_to_cbrd(user_id, message_id)
 
 	@classmethod
 	def _switch_page_to_main(cls, user_id, message_id):
-		cls._redisplay_page(user_id)
+		cls._display_page(user_id)
 
 	@classmethod
 	def _switch_page_to_info(cls, user_id, message_id):
-		cls._redisplay_page(user_id)
+		cls._display_page(user_id)
 
 	@classmethod
 	def _switch_page_to_help(cls, user_id, message_id):
-		cls._redisplay_page(user_id)
+		cls._display_page(user_id)
+
+	@classmethod
+	def _switch_page_to_cgmd(cls, user_id, message_id):
+		cls._display_page(user_id)
+
+	@classmethod
+	def _switch_page_to_cbrd(cls, user_id, message_id):
+		print(cls._get_user_state(user_id)['gmd'])
+		cls._display_page(user_id)
 
 	@classmethod
 	def _update_page(cls, user_id, message_id, message: str):
-		cls._redisplay_page(user_id, inplace=True)
+		cls._display_page(user_id, inplace=True)
 
 	@classmethod
-	def _redisplay_page(cls, user_id, content=None, inplace=False):
+	def _display_page(cls, user_id, content=None, inplace=False):
 		state = cls._get_user_state(user_id)
 		state['last_message_id'] = cls._show_message(
 			user_id,
