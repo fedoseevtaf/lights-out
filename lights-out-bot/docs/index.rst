@@ -10,6 +10,7 @@ lights-out-bot
 	:maxdepth: 2
 
 	About levels <level>
+	Message handling (main) <main>
 
 ---------------
 

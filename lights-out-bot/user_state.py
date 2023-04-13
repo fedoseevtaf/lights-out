@@ -24,6 +24,12 @@ class UserState():
 		state = cls._get_user_state(user_id)
 		page_id = state['page_id']
 
+		command = PAGE_COMMANDS[page_id].get(command)
+		if command is None:
+			return
+		state.update(command.content)
+		cls._switch_page(user_id, message_id, command.next_page)
+
 	@classmethod
 	def update_by_message(cls, user_id, message_id, message: str):
 		state = cls._get_user_state(user_id)
