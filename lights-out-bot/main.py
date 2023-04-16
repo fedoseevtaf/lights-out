@@ -110,14 +110,11 @@ class CommandHandler():
 		log.info(f'Command processed {self._command_name=}')
 
 
-command_handlers: Dict[str: CommandHandler] = {
+command_handlers: Dict[str, CommandHandler] = {
 	cmd: CommandHandler._for(cmd)
 	for commands in PAGE_COMMANDS.values()
 		for cmd in commands
 }
-command_handlers.__doc__ = '''\
-All registered commands provided from `view_const`.
-'''
 
 
 @bot.callback_query_handler(func=lambda query: True)
