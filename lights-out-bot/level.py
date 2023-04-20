@@ -290,7 +290,7 @@ class Level(BaseLevel):
 
 		self.__width = width
 		self.__height = height
-		self.__content = content
+		self._content = content
 
 	@property
 	def width(self) -> int:
@@ -309,7 +309,7 @@ class Level(BaseLevel):
 			If the content `length` isn't enough it yields False
 		'''
 
-		yield from self.__content
-		for _ in range(self.width * self.height - len(self.__content)):
+		yield from self._content
+		for _ in range(self.width * self.height - len(self._content)):
 			yield False
 

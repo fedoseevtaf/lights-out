@@ -60,10 +60,13 @@ PAGE_REPLY_BUTTONS = {
 	},
 	PAGE.CBRD: {
 		'Назад': PageSwitchCommand(PAGE.CGMD),
-	},
-	# {'5 * 5', '6 * 6', '7 * 7', '8 * 8', '9 * 9', '10 * 10'},
-	PAGE.CLVL: {}, # {'1', '2', '3', 'Назад'},
-	PAGE.GAME: {}, # {'Назад', 'Стоп'}
+		'5 * 5': PageSwitchCommand(PAGE.CLVL, {'width': 5, 'height': 5}),
+	}, # '6 * 6', '7 * 7', '8 * 8', '9 * 9', '10 * 10'},
+	PAGE.CLVL: {
+		'Назад': PageSwitchCommand(PAGE.CBRD),
+		'This one': PageSwitchCommand(PAGE.GAME, {'level_code': ''}),
+	}, # {'1', '2', '3', 'Назад'},
+	PAGE.GAME: {}
 }
 
 PAGE_COMMANDS = {

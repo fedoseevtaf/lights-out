@@ -12,7 +12,7 @@ class MessageConstructor:
 	@classmethod
 	def make_markup(cls, page_id, content):
 		if page_id is PAGE.GAME:
-			return cls.make_game_markup(content)
+			return cls._make_game_markup(content)
 		markup = tp.ReplyKeyboardMarkup(resize_keyboard=True)
 		markup.add(*(
 			tp.KeyboardButton(text_btn)
@@ -35,5 +35,6 @@ class MessageConstructor:
 			)
 			for ind, btn in enumerate(content['board'])
 		))
+		markup.add(tp.InlineKeyboardButton('Сдаюсь', callback_data='quit'))
 		return markup
 

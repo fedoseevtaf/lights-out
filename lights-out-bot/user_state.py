@@ -1,3 +1,4 @@
+import json
 from typing import Callable
 
 from lights_out import LightsOut
@@ -20,12 +21,13 @@ class UserState():
 		cls._show_message = callback
 
 	@classmethod
-	def update_by_command(cls, user_id, message_id, command: str):
+	def update_by_command(cls, user_id, message_id, command_text: str):
 		state = cls._get_user_state(user_id)
 		page_id = state['page_id']
 
-		command = PAGE_COMMANDS[page_id].get(command)
+		command = PAGE_COMMANDS[page_id].get(command_text)
 		if command is None:
+			cls._update_page(user_id, message_id, command_text)
 			return
 		state.update(command.content)
 		cls._switch_page(user_id, message_id, command.next_page)
@@ -47,6 +49,8 @@ class UserState():
 		state = cls._get_user_state(user_id)
 		if message_id != state['last_message_id']:
 			return
+		if state['page_id'] == PAGE.GAME:
+			cls._click_at_page_game(user_id, message_id, data)
 
 	@classmethod
 	def _get_user_state(cls, user_id):
@@ -67,6 +71,17 @@ class UserState():
 		return state
 
 	@classmethod
+	def _click_at_page_game(cls, user_id, message_id, data):
+		state = cls._get_user_state(user_id)
+		if data == 'quit':
+			return cls._quit_game(user_id, message_id)
+		data = json.loads(data)
+		is_win = LightsOut.board_action(user_id, **data)
+		cls._update_game_page_view(user_id)
+		if is_win:
+			cls._quit_game(user_id, message_id)
+
+	@classmethod
 	def _switch_page(cls, user_id, message_id, next_page):
 		state = cls._get_user_state(user_id)
 		actual_page = state['page_id']
@@ -83,6 +98,10 @@ class UserState():
 			cls._switch_page_to_cgmd(user_id, message_id)
 		elif next_page is PAGE.CBRD:
 			cls._switch_page_to_cbrd(user_id, message_id)
+		elif next_page is PAGE.CLVL:
+			cls._switch_page_to_clvl(user_id, message_id)
+		elif next_page is PAGE.GAME:
+			cls._switch_page_to_game(user_id, message_id)
 
 	@classmethod
 	def _switch_page_to_main(cls, user_id, message_id):
@@ -102,20 +121,105 @@ class UserState():
 
 	@classmethod
 	def _switch_page_to_cbrd(cls, user_id, message_id):
-		print(cls._get_user_state(user_id)['gmd'])
 		cls._display_page(user_id)
 
 	@classmethod
-	def _update_page(cls, user_id, message_id, message: str):
-		cls._display_page(user_id, inplace=True)
+	def _switch_page_to_clvl(cls, user_id, message_id):
+		cls._display_page(user_id)
 
 	@classmethod
-	def _display_page(cls, user_id, content=None, inplace=False):
+	def _switch_page_to_game(cls, user_id, message_id):
+		state = cls._get_user_state(user_id)
+		if 'quit' in state:
+			state.remove('quit')
+			cls._quit_game(user_id, message_id)
+		game_mode = state.get('gmd')
+		width = state.get('width')
+		height = state.get('height')
+		lvl_code = state.get('level_code')
+		LightsOut.start_game(user_id, game_mode, width, height, lvl_code)
+		state['info'] = LightsOut.get_user_info(user_id)
+		if not state['info'].in_game:
+			return cls._switch_page(user_id, message_id, PAGE.MAIN)
+		cls._update_game_page_view(user_id, False)
+
+	@classmethod
+	def _quit_game(cls, user_id, message_id):
+		state = cls._get_user_state(user_id)
+		LightsOut.quit_game(user_id)
+		state['info'] = LightsOut.get_user_info(user_id)
+		if not state['info'].in_game:
+			return cls._switch_page(user_id, message_id, PAGE.MAIN)
+		cls._update_game_page_view(user_id, False)
+
+	@classmethod
+	def _update_game_page_view(cls, user_id, in_place: bool = True):
+		state = cls._get_user_state(user_id)
+		info = state['info'] = LightsOut.get_user_info(user_id)
+		content = {'width': info.width, 'height': info.height, 'board': info.board}
+		cls._display_page(user_id, content, in_place)
+
+	@classmethod
+	def _update_page(cls, user_id, message_id, message: str):
+		state = cls._get_user_state(user_id)
+		page = state['page_id']
+		if page is PAGE.MAIN:
+			cls._update_by_message_page_main(user_id, message_id, message)
+		elif page is PAGE.INFO:
+			cls._update_by_message_page_info(user_id, message_id, message)
+		elif page is PAGE.HELP:
+			cls._update_by_message_page_help(user_id, message_id, message)
+		elif page is PAGE.CGMD:
+			cls._update_by_message_page_cgmd(user_id, message_id, message)
+		elif page is PAGE.CBRD:
+			cls._update_by_message_page_cbrd(user_id, message_id, message)
+		elif page is PAGE.CLVL:
+			cls._update_by_message_page_clvl(user_id, message_id, message)
+		elif page == PAGE.GAME:
+			cls._update_by_message_page_game(user_id, message_id, message)
+
+	@classmethod
+	def _update_by_message_page_main(cls, user_id, message_id, message):
+		cls._hide_message(user_id, message_id)
+		cls._display_page(user_id, in_place=True)
+
+	@classmethod
+	def _update_by_message_page_help(cls, user_id, message_id, message):
+		cls._hide_message(user_id, message_id)
+		cls._display_page(user_id, in_place=True)
+
+	@classmethod
+	def _update_by_message_page_info(cls, user_id, message_id, message):
+		cls._hide_message(user_id, message_id)
+		cls._display_page(user_id, in_place=True)
+
+	@classmethod
+	def _update_by_message_page_cgmd(cls, user_id, message_id, message):
+		cls._hide_message(user_id, message_id)
+		cls._display_page(user_id, in_place=True)
+
+	@classmethod
+	def _update_by_message_page_cbrd(cls, user_id, message_id, message):
+		cls._hide_message(user_id, message_id)
+		cls._display_page(user_id, in_place=True)
+
+	@classmethod
+	def _update_by_message_page_clvl(cls, user_id, message_id, message):
+		cls._hide_message(user_id, message_id)
+		cls._display_page(user_id, in_place=True)
+
+	@classmethod
+	def _update_by_message_page_game(cls, user_id, message_id, message):
+		cls._hide_message(user_id, message_id)
+		cls._update_game_page_view(user_id)
+
+	@classmethod
+	def _display_page(cls, user_id, content=None, in_place=False):
 		state = cls._get_user_state(user_id)
 		state['last_message_id'] = cls._show_message(
 			user_id,
 			state['last_message_id'],
-			inplace,
+			in_place,
 			state['page_id'],
 			content,
 		)

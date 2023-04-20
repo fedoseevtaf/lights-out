@@ -11,6 +11,7 @@ class Game(Level):
 					continue
 				if col == y or row == x:
 					self._content[number] = not self._content[number]
+		return 0 <= col < self.width and 0 <= row < self.height
 
 	@property
 	def win(self):
