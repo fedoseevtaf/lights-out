@@ -1,10 +1,10 @@
-'''\
+"""\
 Main module contains bot api manipulation.
-Other modules user high abstraction level with just user_id and message_id, 
+Other modules user high abstraction level with just user_id and message_id,
 for message identification and handling.
-'''
+"""
 
-from os import environ
+
 from typing import Any, Dict, NoReturn, Optional
 
 import telebot as tb
@@ -25,9 +25,9 @@ bot = tb.TeleBot(API_TOKEN)
 
 @UserState.set_hide_message_callback
 def delete_message(chat_id: int, message_id: int) -> NoReturn:
-	'''\
+	"""\
 	Function is provided for the UserState for message managment.
-	'''
+	"""
 
 	bot.delete_message(chat_id, message_id)
 
@@ -42,10 +42,10 @@ def send_message(
 		page_id: Any = None,
 		content: Optional[Dict] = None,
 	) -> int:
-	'''\
+	"""\
 	Function is provided for the UserState for message managment.
 	Return id of the new message (that has been edited if `in_place`).
-	'''
+	"""
 
 	if content is None:
 		content = {}
@@ -63,11 +63,11 @@ def show_message(
 		text: str = 'LightsOut!',
 		markup: Optional[tb.REPLY_MARKUP_TYPES] = None,
 	) -> int:
-	'''\
+	"""\
 	Message sending api manipulations. Return message id.
-	If `in_place` is True, but there is no message with this message_id, 
-	new message will be created and returned it's id.
-	'''
+	If `in_place` is True, but there is no message with this message_id,
+	new message will be created and returned it is id.
+	"""
 
 	if not in_place:
 		new_message = bot.send_message(chat_id, text, reply_markup=markup)
@@ -83,16 +83,16 @@ def show_message(
 	return message_id
 
 
-class CommandHandler():
-	'''\
+class CommandHandler:
+	"""\
 	Incapsulate command name.
-	'''
+	"""
 
 	@classmethod
-	def _for(cls, command_name: str) -> 'Self': # 3.10
-		'''\
+	def _for(cls, command_name: str) -> 'Self':  # 3.10
+		"""\
 		Make handler for specific command and register it by bot.
-		'''
+		"""
 
 		handler = cls(command_name)
 		return bot.message_handler(commands=[command_name])(handler)
@@ -119,9 +119,9 @@ command_handlers: Dict[str, CommandHandler] = {
 
 @bot.callback_query_handler(func=lambda query: True)
 def handle_callback(query: tp.CallbackQuery):
-	'''\
+	"""\
 	Throw callback data to the UserState.
-	'''
+	"""
 
 	message = query.message
 	log.info('Callback recieved')
@@ -132,9 +132,9 @@ def handle_callback(query: tp.CallbackQuery):
 # All text messages
 @bot.message_handler()
 def handle_message(message: tp.Message):
-	'''\
+	"""\
 	Throw message to the UserState.
-	'''
+	"""
 
 	UserState.update_by_message(message.chat.id, message.message_id, message.text)
 
@@ -145,13 +145,12 @@ def handle_message(message: tp.Message):
 	'document', 'location', 'contact', 'sticker'
 ])
 def handle_spam(message: tp.Message):
-	'''\
+	"""\
 	Delete unprocessable messages.
-	'''
+	"""
 
 	bot.delete_message(message.chat.id, message.message_id)
 
 
 if __name__ == '__main__':
 	bot.infinity_polling()
-

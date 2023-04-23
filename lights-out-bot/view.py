@@ -7,7 +7,7 @@ class MessageConstructor:
 
 	@classmethod
 	def make_text(cls, page_id, content):
-		return f'{page_id=}\n{content=}\n' + PAGE_TEXT.get(page_id, 'None')
+		return choice(PAGE_TEXT.get(page_id, 'None'))
 
 	@classmethod
 	def make_markup(cls, page_id, content):
@@ -25,7 +25,7 @@ class MessageConstructor:
 		markup = tp.InlineKeyboardMarkup(row_width=content['width'])
 		markup.add(*(
 			tp.InlineKeyboardButton(
-				('⬛' if btn else '⬜'),
+				('⬜' if btn else '⬛'),
 				callback_data=(
 						'{"row":' +
 						str(ind // content['width']) +
