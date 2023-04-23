@@ -7,3 +7,4 @@ app.route('/')
 def _():
 	return {'wall': 13}
 
+app.run()
