@@ -77,6 +77,7 @@ class UserState():
 			return cls._quit_game(user_id, message_id)
 		data = json.loads(data)
 		is_win = LightsOut.board_action(user_id, **data)
+		print(is_win)
 		cls._update_game_page_view(user_id)
 		if is_win:
 			cls._quit_game(user_id, message_id)

@@ -75,7 +75,7 @@ class LightsOut():
 		if is_valid:
 			game_data.move_n += 1
 		game_data.field = game.to_string(OFF_CODES, ON_CODES)
-		print(game_data.save())
+		game_data.save()
 		db.db.close()
 		return game.win
 
