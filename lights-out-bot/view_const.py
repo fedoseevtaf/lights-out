@@ -21,7 +21,6 @@ PAGE = Enum('PAGE', (
 	'NO_PAGE',
 ))
 
-
 PAGE_TEXT = {
 	PAGE.MAIN: [
 		'Сейчас Вы в главном меню. Здесь Вы можете подробнее узнать об игре или о нас, команде '
@@ -41,12 +40,15 @@ PAGE_TEXT = {
 		' «выключено».'
 		'\nПодробнее об игре Вы можете узнать по ссылке:'
 		'\nhttps://ru.wikipedia.org/wiki/Lights_Out_(игра)'
-		'Большую часть информации Мы взяли от туда)'
 		],
-	PAGE.CGMD: ['Выберите тип уровня.'],
-	PAGE.CBRD: ['Вы выбрали тип уровня. Теперь выберите размер поля.'],
-	PAGE.CLVL: ['Удачи!', 'Успехов!', 'Надеюсь, Вы сможете решить эту непростую головомку!'],
-	PAGE.GAME: ['гг',],
+	PAGE.CGMD: ['Выберите режим игры.'],
+	PAGE.CBRD: ['Выберите размер поля.'],
+	PAGE.CLVL: ['Выберите уровень.'],
+	PAGE.GAME: ['Удачи!', 'Успехов!', 'Надеюсь, Вы сможете решить эту непростую головомку!'],
+}
+
+PAGE_DOCUMENT = {
+	PAGE.HELP: 'images/game_rules_image.png',
 }
 
 PAGE_REPLY_BUTTONS = {
@@ -75,13 +77,12 @@ PAGE_REPLY_BUTTONS = {
 	PAGE.CBRD: {
 		'Назад': PageSwitchCommand(PAGE.CGMD),
 		'3 * 3': PageSwitchCommand(PAGE.GAME, {'width': 3, 'height': 3}),
-		'4 * 4': PageSwitchCommand(PAGE.GAME, {'width': 3, 'height': 4}),
+		'4 * 4': PageSwitchCommand(PAGE.GAME, {'width': 4, 'height': 4}),
 		'5 * 5': PageSwitchCommand(PAGE.GAME, {'width': 5, 'height': 5}),
 		'6 * 6': PageSwitchCommand(PAGE.GAME, {'width': 6, 'height': 6}),
 		'7 * 7': PageSwitchCommand(PAGE.GAME, {'width': 7, 'height': 7}),
 	},
 	PAGE.CLVL: {
-		'Назад': PageSwitchCommand(PAGE.CGMD),
 		'1': PageSwitchCommand(PAGE.GAME, {'level_code': '1'}),
 		'2': PageSwitchCommand(PAGE.GAME, {'level_code': '2'}),
 		'3': PageSwitchCommand(PAGE.GAME, {'level_code': '3'}),
@@ -97,6 +98,7 @@ PAGE_REPLY_BUTTONS = {
 		'13': PageSwitchCommand(PAGE.GAME, {'level_code': '13'}),
 		'14': PageSwitchCommand(PAGE.GAME, {'level_code': '14'}),
 		'15': PageSwitchCommand(PAGE.GAME, {'level_code': '15'}),
+		'Назад': PageSwitchCommand(PAGE.CGMD),
 	},
 	PAGE.GAME: {},
 }
@@ -130,6 +132,8 @@ PAGE_COMMANDS = {
 	PAGE.CLVL: {
 		'back': PageSwitchCommand(PAGE.CGMD),
 	},
-	PAGE.GAME: {},
+	PAGE.GAME: {
+		'quit': PageSwitchCommand(PAGE.GAME, {'quit': True})
+	},
 }
 

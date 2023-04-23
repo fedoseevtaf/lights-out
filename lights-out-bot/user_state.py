@@ -77,7 +77,6 @@ class UserState():
 			return cls._quit_game(user_id, message_id)
 		data = json.loads(data)
 		is_win = LightsOut.board_action(user_id, **data)
-		print(is_win)
 		cls._update_game_page_view(user_id)
 		if is_win:
 			cls._quit_game(user_id, message_id)
@@ -132,8 +131,8 @@ class UserState():
 	def _switch_page_to_game(cls, user_id, message_id):
 		state = cls._get_user_state(user_id)
 		if 'quit' in state:
-			state.remove('quit')
-			cls._quit_game(user_id, message_id)
+			del state['quit']
+			return cls._quit_game(user_id, message_id)
 		game_mode = state.get('gmd')
 		width = state.get('width')
 		height = state.get('height')
@@ -158,7 +157,7 @@ class UserState():
 		state = cls._get_user_state(user_id)
 		info = state['info'] = LightsOut.get_user_info(user_id)
 		content = {'width': info.width, 'height': info.height, 'board': info.board}
-		cls._display_page(user_id, content, in_place)
+		cls._display_page(user_id, content, in_place, only_markup=True)
 
 	@classmethod
 	def _update_page(cls, user_id, message_id, message: str):
@@ -215,7 +214,10 @@ class UserState():
 		cls._update_game_page_view(user_id)
 
 	@classmethod
-	def _display_page(cls, user_id, content=None, in_place=False):
+	def _display_page(
+			cls, user_id, content=None,
+			in_place=False, only_markup: bool = False,
+		):
 		state = cls._get_user_state(user_id)
 		state['last_message_id'] = cls._show_message(
 			user_id,
@@ -223,5 +225,6 @@ class UserState():
 			in_place,
 			state['page_id'],
 			content,
+			only_markup,
 		)
 

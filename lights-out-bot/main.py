@@ -5,6 +5,7 @@ for message identification and handling.
 """
 
 
+from os import environ
 from typing import Any, Dict, NoReturn, Optional
 
 import telebot as tb
@@ -41,6 +42,7 @@ def send_message(
 		# Content specification
 		page_id: Any = None,
 		content: Optional[Dict] = None,
+		only_markup: bool = False,
 	) -> int:
 	"""\
 	Function is provided for the UserState for message managment.
@@ -51,7 +53,11 @@ def send_message(
 		content = {}
 	text = MessageConstructor.make_text(page_id, content)
 	markup = MessageConstructor.make_markup(page_id, content)
-	return show_message(chat_id, message_id, in_place, text, markup)
+	document = MessageConstructor.make_document(page_id, content)
+	return show_message(
+		chat_id, message_id, in_place,
+		text, markup, only_markup, document,
+	)
 
 
 def show_message(
@@ -62,6 +68,8 @@ def show_message(
 		# Content
 		text: str = 'LightsOut!',
 		markup: Optional[tb.REPLY_MARKUP_TYPES] = None,
+		only_markup: bool = False,
+		document: Optional[tp.InputFile] = None,
 	) -> int:
 	"""\
 	Message sending api manipulations. Return message id.
@@ -70,17 +78,24 @@ def show_message(
 	"""
 
 	if not in_place:
-		new_message = bot.send_message(chat_id, text, reply_markup=markup)
+		new_message = send_msg(chat_id, text, markup, document)
 		return new_message.message_id
 
 	try:
-		bot.edit_message_text(text, chat_id, message_id)
+		if not only_markup:
+			bot.edit_message_text(text, chat_id, message_id)
 		bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
 	except tb.apihelper.ApiTelegramException as ex:
 		if ex.description == 'Bad Request: message to edit not found':
-			new_message = bot.send_message(chat_id, text, reply_markup=markup)
+			new_message = send_msg(chat_id, text, markup, document)
 			return new_message.message_id
 	return message_id
+
+
+def send_msg(chat_id: int, text, markup, document):
+	if document is not None:
+		return bot.send_photo(chat_id, document, caption=text, reply_markup=markup)
+	return bot.send_message(chat_id, text, reply_markup=markup)
 
 
 class CommandHandler:
@@ -154,3 +169,4 @@ def handle_spam(message: tp.Message):
 
 if __name__ == '__main__':
 	bot.infinity_polling()
+
