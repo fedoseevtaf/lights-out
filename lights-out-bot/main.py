@@ -104,7 +104,7 @@ class CommandHandler:
 	"""
 
 	@classmethod
-	def _for(cls, command_name: str) -> 'Self':  # 3.10
+	def _for(cls, command_name: str) -> 'Self':  # noqa: It's 3.11 feature
 		"""\
 		Make handler for specific command and register it by bot.
 		"""
