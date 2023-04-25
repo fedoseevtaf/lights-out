@@ -9,7 +9,7 @@ Fantastically simple gameplay experience directly in your messenger.
 ### What Lights Out is
 
 Lights Out is a logical puzzle game on the rectangular field.
-Rules and other details about the Lights Out game you can read [here](https://en.wikipedia.org/wiki/Lights_Out_(game)).
+You can read rules and other details about the Lights Out game [here](https://en.wikipedia.org/wiki/Lights_Out_(game)).
 
 ### Features
 
@@ -26,17 +26,12 @@ Rules and other details about the Lights Out game you can read [here](https://en
 
 ##### REST API for Lights Out
 
-- Check an existing of the solution
+- Check a solution existance
 - Find an arbitrary solution
 - Find the minimal solution
 - Find all the solutions
 
 ### Solution stack and details
-
-#### Conceptions
-
-- Lights Out based on Telegram
-- Lights Out solver REST API
 
 #### Requrements
 

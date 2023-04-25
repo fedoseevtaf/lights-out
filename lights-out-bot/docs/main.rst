@@ -1,6 +1,6 @@
-level.py
+main.py
 -----------------
 
-.. automodule:: level
+.. automodule:: main
 	:members:
 	:special-members: __iter__, __init__

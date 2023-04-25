@@ -1,8 +1,8 @@
 '''\
-This module provide simple and powerfull tools for level-making.
+This module provides simple and powerfull tools for creating levels.
 
 You can use basic implementation :code:`Level`
-or make your custom tool by inheritance of :code:`BaseLevel`.
+or make your custom tool by inheriting from :code:`BaseLevel`.
 
 Example:
 
@@ -56,16 +56,14 @@ class BaseLevel(ABC):
 
 	.. NOTE::
 
-		I use :code:`property` for width and height because width and height
-		are properties! It's important for level object have an exat private
-		info about itself.
+		I use :code:`property` for width and height
 	'''
 
 	@property
 	@abstractmethod
 	def width(self) -> int:
 		'''\
-		Width of the level.
+		Level width
 		'''
 
 		return 0
@@ -74,14 +72,15 @@ class BaseLevel(ABC):
 	@abstractmethod
 	def height(self) -> int:
 		'''\
-		Height of the level.
+		Level height
 		'''
+
 		return 0
 
 	@abstractmethod
 	def __iter__(self) -> Iterator[bool]:
 		'''\
-		Interlacing representation of the level.
+		Line by line representation of the level.
 
 		Order of cells: (4 x 4 example)
 
@@ -115,7 +114,8 @@ class BaseLevel(ABC):
 
 		.. NOTE::
 
-			The `length` of the iterator should be greater or equal width * height.
+			The `length` of the iterator should be 
+			greater or equal than :strong:`width * height`
 		'''
 
 		return
@@ -124,6 +124,55 @@ class BaseLevel(ABC):
 
 class Level(BaseLevel):
 	'''\
+	This is a basic implementation for level.
+
+	It has built-in functions to load level from different sources.
+
+	1. Prepared :code:`Sequence[bool]`
+		.. code:: python
+			:number-lines:
+
+			level_content = (
+				True, False, False, True,
+				False, True, True, False,
+				True, False, True, False,
+			)
+			level = Level(4, 3, content=level_content)
+	2. String
+		.. code::
+			:number-lines:
+
+			level_content = \'''\\
+			X..X
+			.XX.
+			X.X.
+			\'''
+			level = Level.from_string(4, 3, level_content, '.', 'X')
+	3. File (:code:`TextIO`)
+		.. NOTE::
+
+			Text io data must be written in special format
+
+		.. code:: python
+			:number-lines:
+
+			import io
+			level_content = \'''\\
+			4 3 0
+			.*
+			X#
+			#..X	.#X*	X*X.
+			\'''
+			level = Level.from_io(StringIO(level_content))
+
+	After that you get a simple level object.
+
+	>>> level.width
+	4
+	>>> level.height
+	3
+	>>> print(*level)
+	True False False True False True True False True False True False
 	'''
 
 	@classmethod
@@ -131,6 +180,55 @@ class Level(BaseLevel):
 			cls, width: int, height: int, string: str,
 			off_codes: Container[str], on_codes: Container[str]
 		):
+		'''\
+		Read level from string.
+
+		:width:
+			level width
+		:height:
+			level height
+		:string:
+			string of level (rows aren't separated)
+		:off_codes:
+			:code:`Container` of the **light-off** characters
+		:on_codes:
+			:code:`Container` of the **light-on** characters
+
+		.. NOTE::
+
+			If character in string isn't in :code:`on/off_codes` it's ignored
+
+		Examples:
+
+		-
+			.. code::
+				:number-lines:
+
+				string = '1001__0110__1010'
+				level = Level.from_string(4, 3, string, '0', '1')
+
+		-
+			.. code::
+				:number-lines:
+
+				line_separator = '_'
+				lights_off = '-~'
+				lights_on = '#X'
+
+				line1 = '#--#'
+				line2 = '~XX~'
+				# Mixed case:
+				line3 = 'X-#~'
+				lines = line1, line2, line3
+
+				string_a = line_separator.join(lines)
+				string_b = ''.join(lines) # Line separators are optional
+
+				level_a = Level.from_string(4, 3, string_a, off_codes, on_codes)
+				level_b = Level.from_string(4, 3, string_b, off_codes, on_codes)
+				for cell_a, cell_b is zip(level_a, level_b):
+					assert cell_a is cell_b
+		'''
 
 		content = []
 		for char in string:
@@ -141,8 +239,23 @@ class Level(BaseLevel):
 			# If the char is unknown, it is ignored
 		return cls(width, height, content=content)
 
+	def to_string(
+			self, off_codes: Container[str], on_codes: Container[str]
+		) -> str:
+		return ''.join(
+			(on_codes[0] if cell else off_codes[0])
+			for cell in self
+		)
+
 	@classmethod
 	def from_io(cls, io: TextIO):
+		'''\
+		Read level from io (use a special format).
+
+		:io:
+			:code:`TextIO` to read level
+		'''
+
 		width, height, skip = map(int, io.readline().split())
 		off_codes = io.readline().strip()
 		on_codes = io.readline().strip()
@@ -152,13 +265,34 @@ class Level(BaseLevel):
 
 	@classmethod
 	def from_file(cls, filename: str):
+		'''\
+		:filename:
+			file name
+
+		The same as:
+
+		.. code:: python
+
+			with open(filename) as file:
+				level = Level.from_io(file)
+		'''
+
 		with open(filename) as file:
 			return cls.from_io(file)
 
 	def __init__(self, width, height, *, content: Sequence[bool] = tuple()):
+		'''\
+		:width:
+			level width
+		:height:
+			level height
+		:content:
+			Prepared :code:`Sequence[bool]`
+		'''
+
 		self.__width = width
 		self.__height = height
-		self.__content = content
+		self._content = content
 
 	@property
 	def width(self) -> int:
@@ -169,7 +303,15 @@ class Level(BaseLevel):
 		return self.__height
 
 	def __iter__(self) -> Iterator[bool]:
-		yield from self.__content
-		for _ in range(self.width * self.height - len(self.__content)):
+		'''\
+		Line by line representation of the level.
+
+		.. NOTE::
+
+			If the content `length` isn't enough it yields False
+		'''
+
+		yield from self._content
+		for _ in range(self.width * self.height - len(self._content)):
 			yield False
 
