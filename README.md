@@ -20,22 +20,11 @@ You can read rules and other details about the Lights Out game [here](https://en
 
 ## For developers
 
-### Docs [here](https://lights-out.readthedocs.io/en/latest/)
-
-### Features
-
-##### REST API for Lights Out
-
-- Check a solution existance
-- Find an arbitrary solution
-- Find the minimal solution
-- Find all the solutions
-
 ### Solution stack and details
 
 #### Requrements
 
-- flask
+- peewee
 - pyTelegramBotAPI
 
 #### Linters and code style
@@ -43,8 +32,6 @@ You can read rules and other details about the Lights Out game [here](https://en
 - flake8
 
 > Use only tabs instead of spaces
-
-Documentation is made with sphinx.
 
 ### Authors
 
@@ -55,4 +42,3 @@ Documentation is made with sphinx.
 > #### [XMister2708](https://github.com/XMister2708)
 >
 > [<img src='https://avatars.githubusercontent.com/u/104027756' alt='Visit XMister2708 profile' width=100px height=100px />](https://github.com/XMister2708)
-
