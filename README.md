@@ -2,7 +2,7 @@
 
 > #### [@lights_out_bot](https://web.telegram.org/k/#@lights_out_bot)
 >
-> [<img src='misc/qr_code.jpg' alt='Visit fedoseevtaf profile' width=100px height=100px />](https://web.telegram.org/k/#@lights_out_bot)
+> [<img src='misc/qr_code.jpg' alt='Visit fedoseevtaf profile' width=200px height=200px />](https://web.telegram.org/k/#@lights_out_bot)
 
 ## Play Lights Out in messenger
 
