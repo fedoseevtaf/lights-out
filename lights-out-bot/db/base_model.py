@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import SqliteDatabase, Model
 
 
 db = SqliteDatabase('bot.db')

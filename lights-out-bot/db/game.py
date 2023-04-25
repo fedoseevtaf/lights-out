@@ -1,4 +1,7 @@
-from peewee import *
+from peewee import (
+	IntegerField, CharField, DateTimeField, ForeignKeyField,
+	Check,
+)
 
 from db.base_model import BaseModel
 from db.level import Level

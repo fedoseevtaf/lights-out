@@ -239,7 +239,9 @@ class Level(BaseLevel):
 			# If the char is unknown, it is ignored
 		return cls(width, height, content=content)
 
-	def to_string(self, off_codes: Container[str], on_codes: Container[str]) -> str:
+	def to_string(
+			self, off_codes: Container[str], on_codes: Container[str]
+		) -> str:
 		return ''.join(
 			(on_codes[0] if cell else off_codes[0])
 			for cell in self
