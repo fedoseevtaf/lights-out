@@ -2,7 +2,7 @@
 
 > #### [@lights_out_bot](https://web.telegram.org/k/#@lights_out_bot)
 >
-> [<img src='misc/qr_code.jpg' alt='Visit fedoseevtaf profile' width=100px height=100px />](https://web.telegram.org/k/#@lights_out_bot)
+> [<img src='misc/qr_code.png' alt='Visit fedoseevtaf profile' width=100px height=100px />](https://web.telegram.org/k/#@lights_out_bot)
 
 ## Play Lights Out in messenger
 
@@ -10,7 +10,7 @@ Fantastically simple gameplay experience directly in your messenger.
 
 ## For players
 
-![game preview](misc/preview.png)
+![game preview](misc/preview.jpg)
 
 ### What Lights Out is
 
