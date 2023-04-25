@@ -1,4 +1,3 @@
-from json import dumps as json_dumps
 from random import choice
 
 import telebot.types as tp

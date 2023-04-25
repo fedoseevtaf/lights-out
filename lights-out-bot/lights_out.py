@@ -4,7 +4,7 @@ import datetime
 import peewee
 
 from game import Game
-from level import Level
+
 from user_info import UserInfo
 
 from conf_level import LEVELS
@@ -50,7 +50,7 @@ class LightsOut():
 			width=width, height=height, field=game.to_string(OFF_CODES, ON_CODES),
 			move_n=0, start_time=datetime.datetime.now(), level_id=level_data.id,
 		)
-		db.User.update(game=game_data).where(db.User.id==user_id).execute()
+		db.User.update(game=game_data).where(db.User.id == user_id).execute()
 		db.db.close()
 
 	@classmethod
@@ -65,7 +65,7 @@ class LightsOut():
 	@classmethod
 	def board_action(cls, user_id: int, row: int, col: int):
 		db.db.connect()
-		user = db.User.select().where(db.User.id==user_id).get()
+		user = db.User.select().where(db.User.id == user_id).get()
 		game_data = user.game
 		game = Game.from_string(
 			game_data.width, game_data.height, game_data.field,

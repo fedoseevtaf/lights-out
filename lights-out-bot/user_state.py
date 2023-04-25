@@ -72,7 +72,7 @@ class UserState():
 
 	@classmethod
 	def _click_at_page_game(cls, user_id, message_id, data):
-		state = cls._get_user_state(user_id)
+		state = cls._get_user_state(user_id) # noqa
 		if data == 'quit':
 			return cls._quit_game(user_id, message_id)
 		data = json.loads(data)
